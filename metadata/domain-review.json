@@ -1,0 +1,73 @@
+{
+  "repo": "notion-svc-profile-pipe",
+  "language": "Kotlin",
+  "category": "Backend services",
+  "goal": "Design a Kotlin verification harness for profile systems, covering visual model generation, layout fixtures, and failure-oriented tests.",
+  "review_model": {
+    "terms": [
+      "queue pressure",
+      "retry load",
+      "worker slack",
+      "session drift"
+    ],
+    "lanes": [
+      "ship",
+      "watch",
+      "hold"
+    ],
+    "score": "signal * 2 + slack + confidence - drag * 3",
+    "purpose": "surface the domain-specific cases that need the most careful review"
+  },
+  "cases": [
+    {
+      "name": "baseline",
+      "focus": "queue pressure",
+      "signal": 67,
+      "slack": 42,
+      "drag": 27,
+      "confidence": 45,
+      "score": 140,
+      "lane": "ship"
+    },
+    {
+      "name": "stress",
+      "focus": "retry load",
+      "signal": 61,
+      "slack": 30,
+      "drag": 8,
+      "confidence": 57,
+      "score": 185,
+      "lane": "ship"
+    },
+    {
+      "name": "edge",
+      "focus": "worker slack",
+      "signal": 84,
+      "slack": 40,
+      "drag": 23,
+      "confidence": 85,
+      "score": 224,
+      "lane": "ship"
+    },
+    {
+      "name": "recovery",
+      "focus": "session drift",
+      "signal": 69,
+      "slack": 54,
+      "drag": 17,
+      "confidence": 67,
+      "score": 208,
+      "lane": "ship"
+    },
+    {
+      "name": "stale",
+      "focus": "queue pressure",
+      "signal": 59,
+      "slack": 41,
+      "drag": 11,
+      "confidence": 63,
+      "score": 189,
+      "lane": "ship"
+    }
+  ]
+}

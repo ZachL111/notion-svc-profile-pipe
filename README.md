@@ -1,68 +1,40 @@
 # notion-svc-profile-pipe
 
-`notion-svc-profile-pipe` is a focused Kotlin codebase around design a Kotlin verification harness for profile systems, covering visual model generation, layout fixtures, and failure-oriented tests. It is meant to be easy to inspect, run, and extend without a hosted service.
+`notion-svc-profile-pipe` keeps a focused Kotlin implementation around backend services. The project goal is to design a Kotlin verification harness for profile systems, covering visual model generation, layout fixtures, and failure-oriented tests.
 
-## Notion Svc Profile Pipe Walkthrough
+## Project Rationale
 
-I would read the project from the outside in: command, fixture, model, then roadmap. That keeps the backend services idea grounded in files that can be checked locally.
+The point is to make a small domain rule concrete enough that a reader can change it and immediately see what broke.
 
-## Capabilities
+## Notion Svc Profile Pipe Review Notes
 
-- Includes extended examples for queue pressure, including `surge` and `degraded`.
-- Documents bounded workers tradeoffs in `docs/operations.md`.
-- Runs locally with a single verification command and no external credentials.
-- Stores project constants and verification metadata in `metadata/project.json`.
-- Adds a repository audit script that checks structure before running the language verifier.
+`edge` and `baseline` are the cases worth reading first. They show the optimistic and cautious ends of the fixture.
 
-## Reason For The Project
+## Feature Set
 
-The goal is to capture the core behavior in code and make the surrounding assumptions obvious. A reader should be able to run the verifier, open the fixtures, and understand why each decision was made.
+- `fixtures/domain_review.csv` adds cases for queue pressure and retry load.
+- `metadata/domain-review.json` records the same cases in structured form.
+- `config/review-profile.json` captures the read order and the two review questions.
+- `examples/notion-svc-profile-walkthrough.md` walks through the case spread.
+- The Kotlin code includes a review path for `worker slack` and `queue pressure`.
+- `docs/field-notes.md` explains the strongest and weakest cases.
 
-## Where Things Live
+## Architecture
 
-- `src`: primary implementation
-- `tests`: verification harness
-- `fixtures`: compact golden scenarios
-- `examples`: expanded scenario set
-- `metadata`: project constants and verification metadata
-- `docs`: operations and extension notes
-- `scripts`: local verification and audit commands
+The fixture data drives the tests. The code stays thin, while `metadata/domain-review.json` and `config/review-profile.json` explain what each case is meant to protect.
 
-## How It Is Put Together
+The Kotlin addition stays small enough to inspect in one sitting.
 
-The project is organized around a compact model rather than a large framework. Inputs are scored, classified, and checked against golden fixtures. The constants live in code and are mirrored in metadata so documentation drift is easy to catch. The Kotlin version keeps data classes and model logic close together for a JVM-friendly core.
-
-## Command Examples
+## Usage
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1
 ```
 
-This runs the language-level build or test path against the compact fixture set.
+## Test Command
 
-## Data Notes
+The same command runs the local verification path. The highest-scoring domain case is `edge` at 224, which lands in `ship`. The most cautious case is `baseline` at 140, which lands in `ship`.
 
-The extended cases are not random smoke tests. `degraded` keeps pressure on the review path, while `surge` shows the model when capacity and weight are strong enough to clear the threshold.
+## Next Improvements
 
-## Check The Work
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/audit.ps1
-```
-
-The audit command checks repository structure and README constraints before it delegates to the verifier.
-
-## Tradeoffs
-
-This code is local-first. It makes no claim about deployed usage and avoids credentials, hosted state, and environment-specific setup.
-
-## Possible Extensions
-
-- Add a loader for `examples/extended_cases.csv` and promote selected cases into the language test suite.
-- Add a short report command that prints the score breakdown for a single scenario.
-- Add malformed input fixtures so the failure path is as visible as the happy path.
-- Add one more backend services fixture that focuses on a malformed or borderline input.
-
-## Getting It Running
-
-Use a normal shell with Kotlin available on `PATH`. The verifier is written as a PowerShell script because the portfolio was assembled on Windows.
+The fixture set is small enough to audit by hand. The next useful expansion is malformed input coverage, not extra surface area.
